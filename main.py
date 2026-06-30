@@ -2,8 +2,8 @@
 RAG 知识库中台 — Streamlit 统一平台
 """
 import streamlit as st
-from db.models import list_teams, create_team, delete_team, add_document, get_stats
-from rag_engine import ask, upload_file, list_team_docs, delete_team_docs
+from db.models import list_teams, create_team, delete_team, add_document, delete_document_by_filename, get_stats
+from rag_engine import ask, upload_file, list_team_docs, delete_document, delete_team_docs
 
 st.set_page_config(page_title="知识库中台", page_icon="📚", layout="wide")
 
@@ -77,8 +77,9 @@ else:
                     st.markdown(f"📄 {d['filename']} — {d['chunks']} 切片")
                 with col_b:
                     if st.button("删除", key=f"del_{d['filename']}_{team_id}"):
-                        delete_team_docs(team_id)
-                        st.success("已清空知识库")
+                        delete_document(team_id, d['filename'])
+                        delete_document_by_filename(team_id, d['filename'])
+                        st.success(f"已删除「{d['filename']}」")
                         st.rerun()
 
     # Tab 3: 团队管理
